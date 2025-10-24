@@ -32,6 +32,10 @@ export class Catching implements OnInit, OnDestroy {
           debug: false,
         },
       },
+      dom: {
+        createContainer: true,
+      },
+
       scene: [PreloadScene, PlayScene, MainScene],
     };
 

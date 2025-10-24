@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 
 export class PreloadScene extends Phaser.Scene {
   private turboText!: Phaser.GameObjects.Text;
+  public inputName: string = '';
 
   constructor() {
     super('PreloadScene');
@@ -16,10 +17,34 @@ export class PreloadScene extends Phaser.Scene {
 
     this.load.image('bucket', '../../assets/catching/bucket.png');
     this.load.svg('bucket', '../../assets/catching/bucket.svg');
+    this.load.html('nameform', '../../assets/catching/nameform.html');
+
+    this.registry.set('playerName', 'Anna');
+    this.registry.set('score', 0);
   }
 
   create() {
     // Add instructions before starting the game
+
+    let nameForm = this.add.dom(400, 350).createFromCache('nameform');
+
+    nameForm.addListener('submit');
+    nameForm.on('submit', (event: any) => {
+      event.preventDefault();
+      const inputElement = nameForm.getChildByName('username') as HTMLInputElement;
+      const playerName = inputElement.value;
+
+      if (playerName.length > 0) {
+        this.registry.set('playerName', playerName);
+        nameForm.removeListener('submit');
+        nameForm.setVisible(false);
+        this.scene.start('PlayScene');
+      } else {
+        inputElement.placeholder = 'Please enter your name!';
+        inputElement.style.borderColor = '#ff0000';
+      }
+    });
+
     this.add
       .text(400, 200, 'CATCHING GAME', {
         fontSize: '32px',
@@ -42,22 +67,6 @@ export class PreloadScene extends Phaser.Scene {
       .text(400, 280, 'Hold SPACEBAR for turbo speed (2x)', {
         fontSize: '20px',
         color: '#F23885',
-        fontFamily: 'Arial',
-        align: 'center',
-      })
-      .setOrigin(0.5, 0.5);
-
-    // this.add.text(400, 320, 'Catch 4 balls to win!', {
-    //   fontSize: '20px',
-    //   color: '#fff',
-    //   fontFamily: 'Arial',
-    //   align: 'center'
-    // }).setOrigin(0.5, 0.5);
-
-    this.add
-      .text(400, 400, 'Press SPACE to start', {
-        fontSize: '24px',
-        color: '#002C5C',
         fontFamily: 'Arial',
         align: 'center',
       })
