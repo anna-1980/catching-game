@@ -10,7 +10,7 @@ export class PreloadScene extends Phaser.Scene {
 
   preload() {
     this.load.image('bucket', '../../assets/catching/bucket.png');
-    this.load.svg('bucket', '../../assets/catching/bucket.svg');
+    // this.load.svg('bucket', '../../assets/catching/bucket.svg');
     this.load.html('nameform', '../../assets/catching/nameform.html');
 
     this.registry.set('playerName', 'Anna');
@@ -73,22 +73,22 @@ export class PreloadScene extends Phaser.Scene {
 
     /// get the scores
     // --- HALL OF FAME ---
-    this.add
-      .text(400, 450, '🏆 HALL OF FAME 🏆', {
-        fontSize: '24px',
-        color: '#002C5C',
-        fontFamily: 'Arial',
-        align: 'center',
-      })
-      .setOrigin(0.5);
 
-    // Fetch top 5 scores
-    fetch('http://localhost:3000/scores?_sort=score&_order=desc&_limit=5')
-      .then((res) => res.json())
+    (window as any).scoreService
+      .getTopScores(5)
       .then((scores: any[]) => {
-        if (scores.length === 0) {
+        this.add
+          .text(400, 450, '🏆 HALL OF FAME 🏆', {
+            fontSize: '24px',
+            color: '#002C5C',
+            fontFamily: 'Arial',
+            align: 'center',
+          })
+          .setOrigin(0.5);
+
+        if (!scores.length) {
           this.add
-            .text(400, 490, 'No scores yet — be the first!', {
+            .text(400, 540, 'No scores yet — be the first!', {
               fontSize: '18px',
               color: '#444',
               fontFamily: 'Arial',
@@ -99,12 +99,12 @@ export class PreloadScene extends Phaser.Scene {
         }
 
         let text = '';
-        scores.forEach((entry, i) => {
-          text += `${i + 1}. ${entry.user.padEnd(5)}   ${entry.score}\n`;
+        scores.forEach((s, i) => {
+          text += `${i + 1}. ${s.user} - ${s.score}\n`;
         });
 
         this.add
-          .text(400, 530, text, {
+          .text(400, 540, text, {
             fontSize: '20px',
             color: '#003598',
             fontFamily: 'Courier New, monospace',
@@ -112,8 +112,8 @@ export class PreloadScene extends Phaser.Scene {
           })
           .setOrigin(0.5);
       })
-      .catch((err) => {
-        console.error('Error fetching scores:', err);
+      .catch((err: any) => {
+        console.error('Error loading scores:', err);
         this.add
           .text(400, 540, 'Error loading scores 😢', {
             fontSize: '18px',
@@ -124,9 +124,51 @@ export class PreloadScene extends Phaser.Scene {
           .setOrigin(0.5);
       });
 
+    // Fetch top 5 scores
+    // fetch('http://localhost:3000/scores?_sort=score&_order=desc&_limit=5')
+    //   .then((res) => res.json())
+    //   .then((scores: any[]) => {
+    //     if (scores.length === 0) {
+    //       this.add
+    //         .text(400, 490, 'No scores yet — be the first!', {
+    //           fontSize: '18px',
+    //           color: '#444',
+    //           fontFamily: 'Arial',
+    //           align: 'center',
+    //         })
+    //         .setOrigin(0.5);
+    //       return;
+    //     }
+
+    //     let text = '';
+    //     scores.forEach((entry, i) => {
+    //       text += `${i + 1}. ${entry.user.padEnd(5)}   ${entry.score}\n`;
+    //     });
+
+    //     this.add
+    //       .text(400, 530, text, {
+    //         fontSize: '20px',
+    //         color: '#003598',
+    //         fontFamily: 'Courier New, monospace',
+    //         align: 'center',
+    //       })
+    //       .setOrigin(0.5);
+    //   })
+    //   .catch((err) => {
+    //     console.error('Error fetching scores:', err);
+    //     this.add
+    //       .text(400, 540, 'Error loading scores 😢', {
+    //         fontSize: '18px',
+    //         color: '#a00',
+    //         fontFamily: 'Arial',
+    //         align: 'center',
+    //       })
+    //       .setOrigin(0.5);
+    //   });
+
     const hallBg = this.add.graphics();
     hallBg.fillStyle(0xffffff, 0.7);
     hallBg.fillRoundedRect(230, 420, 340, 165, 5);
-    hallBg.setDepth(-1);  
+    hallBg.setDepth(-1);
   }
 }

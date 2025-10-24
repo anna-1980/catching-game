@@ -209,14 +209,38 @@ export class PlayScene extends Phaser.Scene {
       this.scene.start('PreloadScene');
     });
 
-    fetch('http://localhost:3000/scores', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        user: this.playerName,
-        score: this.score,
-        timestamp: new Date().toISOString(),
-      }),
-    });
+    // fetch('http://localhost:3000/scores', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({
+    //     user: this.playerName,
+    //     score: this.score,
+    //     timestamp: new Date().toISOString(),
+    //   }),
+    // });
+    // Save score to Firestore
+    (window as any).scoreService
+      .addScore(this.playerName, this.score) // optionally pass 'gameId'
+      .then(() => {
+        this.add
+          .text(400, 200, 'Score saved!', {
+            fontSize: '20px',
+            color: '#00AA00',
+            fontFamily: 'Arial',
+            align: 'center',
+          })
+          .setOrigin(0.5);
+      })
+      .catch((err: any) => {
+        console.error('Error saving score:', err);
+        this.add
+          .text(400, 500, 'Could not save score 😢', {
+            fontSize: '20px',
+            color: '#AA0000',
+            fontFamily: 'Arial',
+            align: 'center',
+          })
+          .setOrigin(0.5);
+      });
   }
 }

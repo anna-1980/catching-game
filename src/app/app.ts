@@ -5,11 +5,13 @@ import {
   Component,
   computed,
   inject,
+  OnInit,
   signal,
 } from '@angular/core';
 import { Route, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { interval } from 'rxjs';
 import { Button } from './components/utils/button/button';
+import { FirebaseTestService } from './services/firebase-test.service';
 
 type TocItem = {
   path: string;
@@ -27,6 +29,7 @@ type TocItem = {
 })
 export class App {
   public readonly router = inject(Router);
+  private readonly firebaseTest = inject(FirebaseTestService);
   readonly toc = computed<TocItem[]>(() => this.buildToc(this.router.config));
 
   private buildToc(routes: Route[], parentPath: string = ''): TocItem[] {
@@ -49,4 +52,9 @@ export class App {
         };
       });
   }
+
+  // ngOnInit() {
+  //   this.firebaseTest.addTestDoc();
+  //   this.firebaseTest.getTestDocs();
+  // }
 }

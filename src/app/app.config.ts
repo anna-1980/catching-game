@@ -9,6 +9,8 @@ import { provideRouter, Router } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { throwError } from 'rxjs';
+import { provideFirebaseApp, initializeApp, FirebaseApp } from '@angular/fire/app';
+import { provideFirestore, getFirestore, initializeFirestore } from '@angular/fire/firestore';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -29,6 +31,19 @@ export const appConfig: ApplicationConfig = {
           return next(req);
         },
       ])
+    ),
+    provideFirebaseApp(() =>
+      initializeApp({
+        apiKey: 'AIzaSyDJPbv-o3WuQJn_vABXZ0TeddaGlcDoAFA',
+        authDomain: 'catching-game-9d7fe.firebaseapp.com',
+        projectId: 'catching-game-9d7fe',
+        storageBucket: 'catching-game-9d7fe.appspot.app',
+        messagingSenderId: '317410973570',
+        appId: '1:317410973570:web:607e8d0fe2314d353ca19b',
+      })
+    ),
+    provideFirestore(() =>
+      initializeFirestore(inject(FirebaseApp), { ...({ useFetchStreams: false } as any) })
     ),
 
     provideBrowserGlobalErrorListeners(),
