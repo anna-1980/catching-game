@@ -10,6 +10,8 @@ import {
 import { Route, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { interval } from 'rxjs';
 import { Button } from './components/utils/button/button';
+import { FirebaseTestService } from './services/firebase-test.service';
+import { ConfigService } from './services/config.service';
 
 type TocItem = {
   path: string;
@@ -26,6 +28,8 @@ type TocItem = {
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export class App {
+  configService = inject(ConfigService);
+
   public readonly router = inject(Router);
   readonly toc = computed<TocItem[]>(() => this.buildToc(this.router.config));
 
