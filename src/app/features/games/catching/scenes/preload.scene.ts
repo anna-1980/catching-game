@@ -13,7 +13,7 @@ export class PreloadScene extends Phaser.Scene {
     this.load.svg('bucket', '../../assets/catching/bucket.svg');
     this.load.html('nameform', '../../assets/catching/nameform.html');
 
-    this.registry.set('playerName', 'Anna');
+    this.registry.set('playerName');
     this.registry.set('score', 0);
   }
 
@@ -25,6 +25,11 @@ export class PreloadScene extends Phaser.Scene {
     nameForm.addListener('submit');
     nameForm.on('submit', (event: any) => {
       event.preventDefault();
+
+      if (event.inputEvent && event.inputEvent.key !== 'Enter') {
+        return;
+      }
+
       const inputElement = nameForm.getChildByName('username') as HTMLInputElement;
       const playerName = inputElement.value;
 
@@ -65,11 +70,6 @@ export class PreloadScene extends Phaser.Scene {
         align: 'center',
       })
       .setOrigin(0.5, 0.5);
-
-    // Wait for spacebar to start the game
-    this.input.keyboard?.on('keydown-SPACE', () => {
-      this.scene.start('PlayScene');
-    });
 
     /// get the scores
     // --- HALL OF FAME ---
