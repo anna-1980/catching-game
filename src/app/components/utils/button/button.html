@@ -1,0 +1,6 @@
+<button
+  (click)="handleClick($event)"
+  [ngClass]="priority | buttonClass: size : expanded : className"
+  [disabled]="disabled">
+  <span class="btn__label"><ng-content></ng-content></span>
+</button>

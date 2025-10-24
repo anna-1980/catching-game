@@ -1,1 +1,100 @@
-/* You can add global styles to this file, and also import other style files */
+@use 'sass:math';
+@use 'sass:list';
+
+@function valueToRem($value) {
+    @return math.div($value, 16px) * 1rem;
+  }
+  
+  // Convert a space-separated list of px values to rem
+  @function toRem($values) {
+    $rem-values: ();
+    $count: list.length($values);
+    @if $count == 1 {
+      @return valueToRem($values);
+    }
+  
+    @for $i from 1 through $count {
+      $rem-values: list.append($rem-values, valueToRem(list.nth($values, $i)));
+    }
+  
+    @return $rem-values;
+  }
+
+  @mixin flex-alignment($column, $justify, $align) {
+    display: flex;
+    flex-direction: $column;
+    justify-content: $justify;
+    align-items: $align;
+  }
+
+$font-size: 16px;
+$font-color: #2f2727;
+
+
+$lightest: #fff;
+$color-primary: #0f511b;
+$color-primary-light: #60c070;
+$color-secondary: #60c070;
+$color-secondary-light: #a9f1a3;
+$color-secondary-dark: #0f511b;
+$color-accent: #e262d1;
+$color-accent-dark: #751168;
+$color-accent-light: #fab7f1;
+$color-transparent: transparent;
+
+
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  
+  body {
+    width: 100%;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: $font-color;
+    padding: 10px;
+  }
+  
+  // elements
+
+
+ // utility classes: 
+ .btn-box{
+  display: flex; 
+  gap: 10px;
+ }
+
+ .center{
+  justify-content: center;
+  align-items: center;
+ }
+
+ // from the course: 
+ :root {
+  --primary: #007bff;
+  --p-05: color-mix(in srgb, var(--primary) 10%, white);
+  --p-10: color-mix(in srgb, var(--primary) 20%, white);
+  --p-20: color-mix(in srgb, var(--primary) 40%, white);
+  --p-30: color-mix(in srgb, var(--primary) 60%, white);
+  --p-40: color-mix(in srgb, var(--primary) 80%, white);
+  --p-50: var(--primary);
+  --p-60: color-mix(in srgb, var(--primary) 80%, black);
+  --p-70: color-mix(in srgb, var(--primary) 60%, black);
+  --p-80: color-mix(in srgb, var(--primary) 40%, black);
+  --p-90: color-mix(in srgb, var(--primary) 20%, black);
+  --p-95: color-mix(in srgb, var(--primary) 10%, black);
+}
+
+// formatting 
+
+.bold{
+  font-weight: bold;
+  font-size: 18px;
+}
