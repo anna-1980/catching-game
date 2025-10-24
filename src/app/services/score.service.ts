@@ -1,3 +1,15 @@
+import { Injectable } from '@angular/core';
+import {
+  Firestore,
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  limit,
+  getDocs,
+  serverTimestamp,
+} from '@angular/fire/firestore';
+
 export interface ScoreEntry {
   user: string;
   score: number;
