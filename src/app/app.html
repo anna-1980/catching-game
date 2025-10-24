@@ -1,4 +1,4 @@
-<h1>Udemy Signals course</h1>
+<h1>Games</h1>
 
  
 <body>
@@ -13,9 +13,29 @@
 
     <ul class="space-y-1">
         <li ><a [routerLink]="['/']" style="color: hotpink">Home</a></li> 
-      @for (item of toc(); track item.path) {
-        <li><a [routerLink]="item.path">{{ item.title }}</a></li>
+    <ul class="toc">
+     @for (item of toc(); track item.path) {
+    <li>
+      <a [routerLink]="item.path" routerLinkActive="active">
+        {{ item.title }}
+      </a>
+
+      @if (item.children?.length) {
+        <ul class="toc__children">
+          @for (child of item.children; track child.path) {
+            <li>
+              <a [routerLink]="child.path" routerLinkActive="active">
+                {{ child.title }}
+              </a>
+
+      
+            </li>
+          }
+        </ul>
       }
+    </li>
+  }
+</ul>
     </ul>
   </nav>
 

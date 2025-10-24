@@ -11,7 +11,12 @@ import { Route, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { interval } from 'rxjs';
 import { Button } from './components/utils/button/button';
 
-type TocItem = { path: string; title: string };
+type TocItem = {
+  path: string;
+  title: string;
+  children?: TocItem[];
+};
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -22,29 +27,26 @@ type TocItem = { path: string; title: string };
 })
 export class App {
   public readonly router = inject(Router);
+  readonly toc = computed<TocItem[]>(() => this.buildToc(this.router.config));
 
-  // flatten + build absolute paths for nested routes
-  private flatten = (routes: Route[], base = ''): Route[] =>
-    routes.flatMap((r) => {
-      const seg = r.path ? `${base}/${r.path}` : base;
-      const here = [{ ...r, path: seg }];
-      const kids = r.children ? this.flatten(r.children, seg) : [];
-      return [...here, ...kids];
-    });
-
-  readonly toc = computed<TocItem[]>(() =>
-    this.flatten(this.router.config)
+  private buildToc(routes: Route[], parentPath: string = ''): TocItem[] {
+    return routes
       .filter(
         (r) =>
           !!r.path &&
           !r.redirectTo &&
-          !r.path.includes(':') && // 🚫 exclude parameterized (child/detail) routes
-          (!r.path.includes('/') || !r.path.startsWith('movie')) && // optional: exclude nested paths
-          (r.component || r.loadComponent) // skip pure redirects
+          !r.path.includes(':') && // skip param routes
+          (r.component || r.loadComponent || r.children?.length)
       )
-      .map((r) => ({
-        path: r.path!, // already absolute (starts with /)
-        title: (r.data as any)?.title ?? r.path!.replace(/^\//, ''),
-      }))
-  );
+      .map((r) => {
+        const fullPath = [parentPath, r.path].filter(Boolean).join('/');
+        const title = (r.data as any)?.title ?? r.path!.split('/').pop() ?? '';
+        const children = r.children?.length ? this.buildToc(r.children, fullPath) : undefined;
+        return {
+          path: '/' + fullPath.replace(/^\/+/, ''), // ensure leading slash
+          title,
+          children,
+        };
+      });
+  }
 }
