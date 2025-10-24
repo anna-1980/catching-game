@@ -20,7 +20,7 @@ export class PlayScene extends Phaser.Scene {
   ];
   private score = 0;
   private scoreText!: Phaser.GameObjects.Text;
-  private totalBalls = 4;
+  private totalBalls = 50;
   private ballsCaught = 0;
   private gameOverText!: Phaser.GameObjects.Text;
 
