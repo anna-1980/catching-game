@@ -1,5 +1,5 @@
 [build]
-  command = "node write-config.mjs && ng build --configuration production"
+  command = "node  ng build"
   publish = "dist/bucket-game/browser"
 
 [[redirects]]
