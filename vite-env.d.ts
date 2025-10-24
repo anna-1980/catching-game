@@ -1,5 +1,3 @@
-/// <reference types="vite/client" />
-
 interface ImportMetaEnv {
   readonly NG_APP_FIREBASE_API_KEY: string;
   readonly NG_APP_FIREBASE_AUTH_DOMAIN: string;
