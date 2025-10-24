@@ -1,0 +1,8 @@
+[build]
+  command = "node write-config.mjs && ng build --configuration production"
+  publish = "dist/bucket-game/browser"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

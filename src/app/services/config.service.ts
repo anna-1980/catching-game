@@ -24,6 +24,7 @@ export class ConfigService {
       }),
       catchError(() => {
         console.warn('No config.json found, using environment variables');
+        console.log('ENV check on Netlify:', import.meta.env);
         this.config = {
           firebase: {
             apiKey: import.meta.env.NG_APP_FIREBASE_API_KEY,
