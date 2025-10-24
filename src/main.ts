@@ -5,15 +5,15 @@ import { ConfigService } from './app/services/config.service';
 import { lastValueFrom } from 'rxjs';
 import { provideHttpClient } from '@angular/common/http';
 
-const configService = new ConfigService();
+// const configService = new ConfigService();
 
-lastValueFrom(configService.loadConfig())
-  .then(() => {
-    return bootstrapApplication(App, {
-      ...appConfig,
-      providers: [provideHttpClient(), { provide: ConfigService, useValue: configService }],
-    });
-  })
-  .catch((err) => console.error('❌ Config load failed', err));
+// lastValueFrom(configService.loadConfig())
+//   .then(() => {
+//     return bootstrapApplication(App, {
+//       ...appConfig,
+//       providers: [provideHttpClient(), { provide: ConfigService, useValue: configService }],
+//     });
+//   })
+//   .catch((err) => console.error('❌ Config load failed', err));
 
 bootstrapApplication(App, appConfig).catch((err) => console.error(err));
