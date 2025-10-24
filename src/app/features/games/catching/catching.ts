@@ -1,8 +1,9 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import Phaser from 'phaser';
 import { MainScene } from './main.scene';
 import { PlayScene } from './scenes/play.scene';
 import { PreloadScene } from './scenes/preload.scene';
+import { ScoreService } from '../../../services/score.service';
 
 @Component({
   standalone: true,
@@ -14,8 +15,12 @@ import { PreloadScene } from './scenes/preload.scene';
 export class Catching implements OnInit, OnDestroy {
   @ViewChild('gameContainer', { static: true }) gameContainer!: ElementRef<HTMLDivElement>;
   private game!: Phaser.Game;
+  private scoreService = inject(ScoreService);
 
   ngOnInit() {
+    // ✅ expose the service globally for Phaser
+    (window as any).scoreService = this.scoreService;
+
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
       width: 800,
