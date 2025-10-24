@@ -1,5 +1,5 @@
 [build]
-  command = "node  ng build"
+  command = "ng build"
   publish = "dist/bucket-game/browser"
 
 [[redirects]]
