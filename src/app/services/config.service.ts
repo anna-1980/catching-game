@@ -1,11 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { Config } from './config-model';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map } from 'rxjs';
+import { catchError, map, of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ConfigService {
-  public config!: Config;
+  public config!: any;
 
   private http = inject(HttpClient);
 
@@ -22,8 +22,19 @@ export class ConfigService {
         this.config = config as unknown as Config;
         return this.config;
       }),
-      catchError((error) => {
-        throw error;
+      catchError(() => {
+        console.warn('No config.json found, using environment variables');
+        this.config = {
+          firebase: {
+            apiKey: import.meta.env.NG_APP_FIREBASE_API_KEY,
+            authDomain: import.meta.env.NG_APP_FIREBASE_AUTH_DOMAIN,
+            projectId: import.meta.env.NG_APP_FIREBASE_PROJECT_ID,
+            storageBucket: import.meta.env.NG_APP_FIREBASE_STORAGE_BUCKET,
+            messagingSenderId: import.meta.env.NG_APP_FIREBASE_MESSAGING_SENDER_ID,
+            appId: import.meta.env.NG_APP_FIREBASE_APP_ID,
+          },
+        };
+        return of(this.config);
       })
     );
   }

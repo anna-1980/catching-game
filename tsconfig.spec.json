@@ -10,5 +10,5 @@
   },
   "include": [
     "src/**/*.ts"
-  ]
+, "vite-env.d.ts"  ]
 }
