@@ -14,6 +14,7 @@ import { provideFirebaseApp, initializeApp, FirebaseApp } from '@angular/fire/ap
 import { provideFirestore, getFirestore, initializeFirestore } from '@angular/fire/firestore';
 import { ConfigService } from './services/config.service';
 import { Config } from './services/config-model';
+import { firebaseConfig } from './firebase.config';
 
 function initAppConfig(configService: ConfigService) {
   return () => firstValueFrom(configService.loadConfig());
@@ -42,10 +43,7 @@ export const appConfig: ApplicationConfig = {
       const configService = inject(ConfigService);
       await firstValueFrom(configService.loadConfig());
     }),
-    provideFirebaseApp(() => {
-      const cfg = inject(ConfigService).config.firebase;
-      return initializeApp(cfg);
-    }),
+    provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideFirestore(() => getFirestore()),
 
     provideBrowserGlobalErrorListeners(),
