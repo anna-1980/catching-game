@@ -1,4 +1,4 @@
-console.log('Firebase API key from import.meta.env:', import.meta.env.NG_APP_FIREBASE_API_KEY);
+
 
 export const firebaseConfig = {
   apiKey: import.meta.env.NG_APP_FIREBASE_API_KEY,
