@@ -16,4 +16,6 @@ import { provideHttpClient } from '@angular/common/http';
 //   })
 //   .catch((err) => console.error('❌ Config load failed', err));
 
+console.log('ENV in Angular (dev/prod):', import.meta.env);
+
 bootstrapApplication(App, appConfig).catch((err) => console.error(err));
