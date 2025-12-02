@@ -5,42 +5,28 @@ import { catchError, map, of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ConfigService {
-  public config!: any;
-
-  private http = inject(HttpClient);
+  public config!: Config;
 
   public loadConfig() {
-    return this.http.get<Record<string, unknown>>('./config.json').pipe(
-      map((config) => {
-        Object.keys(config).forEach((key) => {
-          if (key.startsWith('_')) {
-            delete config[key];
-          }
-        });
+    const env = import.meta.env;
 
-        this.config = config as unknown as Config;
-        return this.config;
-      }),
-      catchError(() => {
-        console.log('ENV check on Netlify:', import.meta.env);
-        console.log('Firebase cfg from env:', this.config.firebase);
+    console.log('ENV in Angular (dev/prod):', env);
 
-        const env = import.meta.env;
+    this.config = {
+      firebase: {
+        apiKey: env.NG_APP_FIREBASE_API_KEY,
+        authDomain: env.NG_APP_FIREBASE_AUTH_DOMAIN,
+        projectId: env.NG_APP_FIREBASE_PROJECT_ID,
+        storageBucket: env.NG_APP_FIREBASE_STORAGE_BUCKET,
+        messagingSenderId: env.NG_APP_FIREBASE_MESSAGING_SENDER_ID,
+        appId: env.NG_APP_FIREBASE_APP_ID,
+      },
+    } as Config;
 
-        this.config = {
-          firebase: {
-            apiKey: env.NG_APP_FIREBASE_API_KEY,
-            authDomain: env.NG_APP_FIREBASE_AUTH_DOMAIN,
-            projectId: env.NG_APP_FIREBASE_PROJECT_ID,
-            storageBucket: env.NG_APP_FIREBASE_STORAGE_BUCKET,
-            messagingSenderId: env.NG_APP_FIREBASE_MESSAGING_SENDER_ID,
-            appId: env.NG_APP_FIREBASE_APP_ID,
-          },
-        } as Config;
+    console.log('Config from env:', this.config);
 
-        return of(this.config);
-      })
-    );
+    // Keep the same shape: Observable<Config>
+    return of(this.config);
   }
 }
 
