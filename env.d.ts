@@ -35,9 +35,11 @@ interface Env {
   readonly NG_APP_FIREBASE_STORAGE_BUCKET: string;
   readonly NG_APP_FIREBASE_MESSAGING_SENDER_ID: string;
   readonly NG_APP_FIREBASE_APP_ID: string;
+}
 
-  // Optional: allow additional vars if you want
-  // [key: string]: string | undefined;
+// This is what @ngx-env/builder wires up
+interface ImportMeta {
+  readonly env: Env;
 }
 
 declare const _NGX_ENV_: {
