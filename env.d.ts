@@ -25,3 +25,12 @@ declare const _NGX_ENV_: Env;
 declare namespace NodeJS {
   export interface ProcessEnv extends Env {}
 }
+
+declare const _NGX_ENV_: {
+  NG_APP_FIREBASE_API_KEY: string;
+  NG_APP_FIREBASE_AUTH_DOMAIN: string;
+  NG_APP_FIREBASE_PROJECT_ID: string;
+  NG_APP_FIREBASE_STORAGE_BUCKET: string;
+  NG_APP_FIREBASE_MESSAGING_SENDER_ID: string;
+  NG_APP_FIREBASE_APP_ID: string;
+};

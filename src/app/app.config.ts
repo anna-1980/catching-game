@@ -12,13 +12,8 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { firstValueFrom, lastValueFrom, throwError } from 'rxjs';
 import { provideFirebaseApp, initializeApp, FirebaseApp } from '@angular/fire/app';
 import { provideFirestore, getFirestore, initializeFirestore } from '@angular/fire/firestore';
-import { ConfigService } from './services/config.service';
-import { Config } from './services/config-model';
-import { firebaseConfig } from './firebase.config';
 
-function initAppConfig(configService: ConfigService) {
-  return () => firstValueFrom(configService.loadConfig());
-}
+import { firebaseConfig } from './firebase.config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -39,10 +34,7 @@ export const appConfig: ApplicationConfig = {
       ])
     ),
     // --- Wait for config before bootstrapping ---
-    provideAppInitializer(async () => {
-      const configService = inject(ConfigService);
-      await firstValueFrom(configService.loadConfig());
-    }),
+
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideFirestore(() => getFirestore()),
 
