@@ -32,7 +32,9 @@
                 "output": "assets"
               }
             ],
-            "styles": ["src/styles.scss"]
+            "styles": [
+              "src/styles.scss"
+            ]
           },
           "configurations": {
             "production": {
@@ -68,13 +70,15 @@
               "buildTarget": "bucket-game:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {}
         },
         "extract-i18n": {
-          "builder": "@angular/build:extract-i18n"
+          "builder": "@ngx-env/builder:extract-i18n",
+          "options": {}
         },
         "test": {
-          "builder": "@angular/build:karma",
+          "builder": "@ngx-env/builder:karma",
           "options": {
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
@@ -84,7 +88,9 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss"]
+            "styles": [
+              "src/styles.scss"
+            ]
           }
         }
       }
