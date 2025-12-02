@@ -26,6 +26,20 @@ declare namespace NodeJS {
   export interface ProcessEnv extends Env {}
 }
 
+interface Env {
+  readonly NODE_ENV: string;
+
+  readonly NG_APP_FIREBASE_API_KEY: string;
+  readonly NG_APP_FIREBASE_AUTH_DOMAIN: string;
+  readonly NG_APP_FIREBASE_PROJECT_ID: string;
+  readonly NG_APP_FIREBASE_STORAGE_BUCKET: string;
+  readonly NG_APP_FIREBASE_MESSAGING_SENDER_ID: string;
+  readonly NG_APP_FIREBASE_APP_ID: string;
+
+  // Optional: allow additional vars if you want
+  // [key: string]: string | undefined;
+}
+
 declare const _NGX_ENV_: {
   NG_APP_FIREBASE_API_KEY: string;
   NG_APP_FIREBASE_AUTH_DOMAIN: string;
