@@ -6,6 +6,8 @@ export class PlayScene extends Phaser.Scene {
   private ground!: Phaser.GameObjects.Graphics;
   private playerName!: string;
 
+  private background!: Phaser.GameObjects.TileSprite;
+
   private x = 400;
   private speed = 300;
 
@@ -38,6 +40,14 @@ export class PlayScene extends Phaser.Scene {
       color: '#000',
       fontFamily: 'Arial',
     });
+
+    //  BACKGROUND
+    this.background = this.add.tileSprite(0, 0, 1600, 1200, 'bg-pattern'); // full game size
+    this.background.setOrigin(0, 0);
+    this.background.setScale(0.5);
+
+    this.background.setDepth(0); // behind everything
+    this.background.setScrollFactor(0); // stay fixed to camera
 
     this.cursors = this.input.keyboard!.createCursorKeys();
     // increase cursor triggered movement speed
@@ -109,6 +119,10 @@ export class PlayScene extends Phaser.Scene {
       }
       return true; // Keep iterating
     });
+
+    // Scroll the background (sideways)
+    const bgSpeed = 0.2; // tweak this for faster/slower scroll
+    this.background.tilePositionX += bgSpeed * delta;
   }
 
   private spawnBall() {

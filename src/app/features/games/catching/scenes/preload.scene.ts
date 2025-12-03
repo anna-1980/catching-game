@@ -13,6 +13,9 @@ export class PreloadScene extends Phaser.Scene {
     this.load.svg('bucket', '../../assets/catching/bucket.svg');
     this.load.html('nameform', '../../assets/catching/nameform.html');
 
+    //backdrop
+    this.load.image('bg-pattern', 'assets/catching/sky-03.png');
+
     this.registry.set('playerName');
     this.registry.set('score', 0);
   }
