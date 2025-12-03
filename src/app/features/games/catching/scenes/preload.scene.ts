@@ -4,6 +4,8 @@ export class PreloadScene extends Phaser.Scene {
   private turboText!: Phaser.GameObjects.Text;
   public inputName: string = '';
 
+  private background!: Phaser.GameObjects.TileSprite;
+
   constructor() {
     super('PreloadScene');
   }
@@ -18,6 +20,10 @@ export class PreloadScene extends Phaser.Scene {
 
     this.registry.set('playerName');
     this.registry.set('score', 0);
+
+    // controls
+    this.load.image('left', './assets/catching/left01.png');
+    this.load.image('right', './assets/catching/right01.png');
   }
 
   create() {
@@ -130,6 +136,13 @@ export class PreloadScene extends Phaser.Scene {
     const hallBg = this.add.graphics();
     hallBg.fillStyle(0xffffff, 0.7);
     hallBg.fillRoundedRect(230, 420, 340, 165, 5);
-    hallBg.setDepth(-1);
+    hallBg.setDepth(0);
+
+    // background
+    this.background = this.add.tileSprite(0, 0, 1600, 1200, 'bg-pattern');
+    this.background.setOrigin(0, 0);
+    this.background.setScale(0.5);
+
+    this.background.setDepth(-1);
   }
 }

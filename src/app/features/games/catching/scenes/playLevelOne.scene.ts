@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 
-export class PlayScene extends Phaser.Scene {
+export class PlayLevelOne extends Phaser.Scene {
   private bucket!: Phaser.Physics.Arcade.Sprite;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private ground!: Phaser.GameObjects.Graphics;
@@ -88,6 +88,19 @@ export class PlayScene extends Phaser.Scene {
       fontFamily: 'Arial',
     });
     this.scoreText.setDepth(10);
+
+    //------- addeing controll arrows for player movement on small screens-------//
+    const left = this.add
+      .image(30, 448, 'left')
+      .setOrigin(0.5, 0.5)
+      .setScale(0.25)
+      .setInteractive();
+
+    const right = this.add
+      .image(420, 448, 'right')
+      .setOrigin(0.5, 0.5)
+      .setScale(0.25)
+      .setInteractive();
   }
 
   override update(_: number, delta: number) {
@@ -179,81 +192,100 @@ export class PlayScene extends Phaser.Scene {
       (ball as Phaser.Physics.Arcade.Image).destroy();
       return true;
     });
+
     this.bucket.clearTint();
-    // Show game over text
-    this.gameOverText = this.add.text(400, 300, 'GAME OVER!\nFinal Score: ' + this.score, {
-      fontSize: '32px',
-      color: ' #003598',
-      fontFamily: 'Arial',
-      align: 'center',
+
+    // 👉 jump to GameOverScene and pass data
+    this.scene.start('GameOverScene', {
+      score: this.score,
+      playerName: this.playerName,
     });
-    this.gameOverText.setOrigin(0.5, 0.5);
-    this.gameOverText.setDepth(20);
-
-    // Add restart instruction
-    const restartText = this.add.text(400, 400, `Press R to restart`, {
-      fontSize: '20px',
-      color: '#000',
-      fontFamily: 'Arial',
-      align: 'center',
-    });
-    restartText.setOrigin(0.5, 0.5);
-    restartText.setDepth(20);
-
-    // Add back to main menu instruction
-    const menuText = this.add.text(400, 430, `Press M to return to main menu`, {
-      fontSize: '20px',
-      color: '#000',
-      fontFamily: 'Arial',
-      align: 'center',
-    });
-    menuText.setOrigin(0.5, 0.5);
-    menuText.setDepth(20);
-
-    // Make just the R and M letters bold using rich text
-    restartText.setText('Press R to restart');
-    menuText.setText('Press M to return to main menu');
-
-    // Listen for restart key
-    this.input.keyboard?.on('keydown-R', () => {
-      this.scene.restart();
-    });
-
-    this.input.keyboard?.on('keydown-M', () => {
-      this.scene.start('PreloadScene');
-    });
-
-    (window as any).scoreService
-      .addScore(this.playerName, this.score) // optionally pass 'gameId'
-      .then(() => {
-        this.add
-          .text(400, 200, 'Score saved!', {
-            fontSize: '20px',
-            color: '#00AA00',
-            fontFamily: 'Arial',
-            align: 'center',
-          })
-          .setOrigin(0.5);
-      })
-      .catch((err: any) => {
-        console.error('Error saving score:', err);
-        this.add
-          .text(400, 500, 'Could not save score 😢', {
-            fontSize: '20px',
-            color: '#AA0000',
-            fontFamily: 'Arial',
-            align: 'center',
-          })
-          .setOrigin(0.5);
-      });
-    // fetch('http://localhost:3000/scores', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({
-    //     user: this.playerName,
-    //     score: this.score,
-    //     timestamp: new Date().toISOString(),
-    //   }),
-    // });
   }
+
+  // private gameOver() {
+  //   // Stop spawning new balls
+  //   this.time.removeAllEvents();
+
+  //   // Destroy all remaining balls
+  //   this.balls.children.each((ball) => {
+  //     (ball as Phaser.Physics.Arcade.Image).destroy();
+  //     return true;
+  //   });
+  //   this.bucket.clearTint();
+  //   // Show game over text
+  //   this.gameOverText = this.add.text(400, 300, 'GAME OVER!\nFinal Score: ' + this.score, {
+  //     fontSize: '32px',
+  //     color: ' #003598',
+  //     fontFamily: 'Arial',
+  //     align: 'center',
+  //   });
+  //   this.gameOverText.setOrigin(0.5, 0.5);
+  //   this.gameOverText.setDepth(20);
+
+  //   // Add restart instruction
+  //   const restartText = this.add.text(400, 400, `Press R to restart`, {
+  //     fontSize: '20px',
+  //     color: '#000',
+  //     fontFamily: 'Arial',
+  //     align: 'center',
+  //   });
+  //   restartText.setOrigin(0.5, 0.5);
+  //   restartText.setDepth(20);
+
+  //   // Add back to main menu instruction
+  //   const menuText = this.add.text(400, 430, `Press M to return to main menu`, {
+  //     fontSize: '20px',
+  //     color: '#000',
+  //     fontFamily: 'Arial',
+  //     align: 'center',
+  //   });
+  //   menuText.setOrigin(0.5, 0.5);
+  //   menuText.setDepth(20);
+
+  //   // Make just the R and M letters bold using rich text
+  //   restartText.setText('Press R to restart');
+  //   menuText.setText('Press M to return to main menu');
+
+  //   // Listen for restart key
+  //   this.input.keyboard?.on('keydown-R', () => {
+  //     this.scene.restart();
+  //   });
+
+  //   this.input.keyboard?.on('keydown-M', () => {
+  //     this.scene.start('PreloadScene');
+  //   });
+
+  //   (window as any).scoreService
+  //     .addScore(this.playerName, this.score) // optionally pass 'gameId'
+  //     .then(() => {
+  //       this.add
+  //         .text(400, 200, 'Score saved!', {
+  //           fontSize: '20px',
+  //           color: '#270c3fff',
+  //           fontFamily: 'Arial',
+  //           align: 'center',
+  //         })
+  //         .setOrigin(0.5);
+  //     })
+  //     .catch((err: any) => {
+  //       console.error('Error saving score:', err);
+  //       this.add
+  //         .text(400, 500, 'Could not save score 😢', {
+  //           fontSize: '20px',
+  //           color: '#AA0000',
+  //           fontFamily: 'Arial',
+  //           align: 'center',
+  //         })
+  //         .setOrigin(0.5);
+  //     });
+  //   // fetch('http://localhost:3000/scores', {
+  //   //   method: 'POST',
+  //   //   headers: { 'Content-Type': 'application/json' },
+  //   //   body: JSON.stringify({
+  //   //     user: this.playerName,
+  //   //     score: this.score,
+  //   //     timestamp: new Date().toISOString(),
+  //   //   }),
+  //   // });
+  // }
 }

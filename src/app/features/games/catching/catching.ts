@@ -1,9 +1,10 @@
 import { Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import Phaser from 'phaser';
 import { MainScene } from './main.scene';
-import { PlayScene } from './scenes/play.scene';
+import { PlayLevelOne } from './scenes/playLevelOne.scene';
 import { PreloadScene } from './scenes/preload.scene';
 import { ScoreService } from '../../../services/score.service';
+import { GameOverScene } from './scenes/GameOver.scene';
 
 @Component({
   standalone: true,
@@ -41,7 +42,7 @@ export class Catching implements OnInit, OnDestroy {
         createContainer: true,
       },
 
-      scene: [PreloadScene, PlayScene, MainScene],
+      scene: [PreloadScene, PlayLevelOne, MainScene, GameOverScene],
     };
 
     this.game = new Phaser.Game(config);
