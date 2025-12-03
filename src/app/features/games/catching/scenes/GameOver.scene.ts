@@ -1,24 +1,31 @@
 import Phaser from 'phaser';
+import { gameState, updateHighScoreIfNeeded } from './../game-state';
 
 interface GameOverData {
   score: number;
   playerName: string;
+  level: number;
+  success: boolean;
 }
 
 export class GameOverScene extends Phaser.Scene {
-  private score!: number;
-  private playerName!: string;
-
   constructor() {
     super('GameOverScene');
   }
 
   create(data: GameOverData) {
-    this.score = data.score;
-    this.playerName = data.playerName || 'Anonymous';
+    gameState.score = data.score;
+    gameState.playerName = data.playerName;
+    gameState.level = data.level;
+    gameState.lastResult = data.success ? 'win' : 'lose';
+
+    // ✅ check & save high score
+    updateHighScoreIfNeeded();
 
     const centerX = this.scale.width / 2;
     const centerY = this.scale.height / 2;
+
+    const titleText = data.success ? 'LEVEL COMPLETE!' : 'GAME OVER!';
 
     // Title
     const title = this.add.text(centerX, centerY - 80, 'GAME OVER!', {
@@ -30,7 +37,7 @@ export class GameOverScene extends Phaser.Scene {
     title.setOrigin(0.5);
 
     // Score
-    const scoreText = this.add.text(centerX, centerY - 20, `Final Score: ${this.score}`, {
+    const scoreText = this.add.text(centerX, centerY - 20, `Final Score: ${gameState.score}`, {
       fontSize: '28px',
       color: '#000',
       fontFamily: 'Arial',
@@ -48,6 +55,10 @@ export class GameOverScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
+    // ---- Decide progression ----
+    const canGoNextLevel = data.success && gameState.lives > 0; // later, when you actually use lives
+    // gameState.level < gameState.MAX_LEVEL;
+
     // const nextLevelText = this.add
     //   .text(centerX, centerY + 70, 'Press N for next level', {
     //     fontSize: '20px',
@@ -56,6 +67,23 @@ export class GameOverScene extends Phaser.Scene {
     //     align: 'center',
     //   })
     //   .setOrigin(0.5);
+
+    if (canGoNextLevel) {
+      // Option A: show a "Press N" prompt
+      this.add
+        .text(centerX, centerY + 70, 'Press N for next level', {
+          fontSize: '20px',
+          color: '#000',
+          fontFamily: 'Arial',
+          align: 'center',
+        })
+        .setOrigin(0.5);
+
+      this.input.keyboard?.on('keydown-N', () => {
+        gameState.level += 1;
+        this.scene.start('Level2Scene'); // or 'PlayLevelTwo'
+      });
+    }
 
     const menuText = this.add
       .text(centerX, centerY + 100, 'Press M for main menu', {
@@ -68,7 +96,7 @@ export class GameOverScene extends Phaser.Scene {
 
     //  Save score
     (window as any).scoreService
-      .addScore(this.playerName, this.score)
+      .addScore(gameState.playerName, gameState.score)
       .then(() => {
         this.add
           .text(centerX, centerY - 130, 'Score saved!', {
@@ -93,7 +121,7 @@ export class GameOverScene extends Phaser.Scene {
 
     //  Key handling
     this.input.keyboard?.on('keydown-R', () => {
-      this.scene.start('PlayScene'); // restart game
+      this.scene.start('PlayLevelOne'); // restart game
     });
 
     // this.input.keyboard?.on('keydown-N', () => {

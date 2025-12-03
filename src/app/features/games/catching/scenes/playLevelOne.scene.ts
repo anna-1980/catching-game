@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { gameState } from './../game-state';
 
 export class PlayLevelOne extends Phaser.Scene {
   private bucket!: Phaser.Physics.Arcade.Sprite;
@@ -20,7 +21,7 @@ export class PlayLevelOne extends Phaser.Scene {
     { color: 0x00186e, points: 10 },
     { color: 0xff00d4, points: 15 },
   ];
-  private score = 0;
+  private scoreLocal = 0;
   private scoreText!: Phaser.GameObjects.Text;
   private totalBalls = 20;
   private ballsCaught = 0;
@@ -30,11 +31,51 @@ export class PlayLevelOne extends Phaser.Scene {
   private turbo = 2;
 
   constructor() {
-    super('PlayScene');
+    super('PlayLevelOne');
+  }
+
+  private finishLevel(success: boolean) {
+    // stop timers etc.
+    this.time.removeAllEvents();
+
+    this.balls.children.each((ball) => {
+      (ball as Phaser.Physics.Arcade.Image).destroy();
+      return true;
+    });
+
+    this.bucket.clearTint();
+
+    gameState.lastResult = success ? 'win' : 'lose';
+
+    this.scene.start('GameOverScene', {
+      score: gameState.score,
+      playerName: gameState.playerName,
+      level: gameState.level,
+      success,
+    });
+  }
+
+  init() {
+    // reset per-run values
+    this.ballsCaught = 0;
+    this.scoreLocal = 0;
+    gameState.score = 0;
+
+    // if you use lives as “per run”, reset here too:
+    // gameState.lives = 3;
+
+    // if you store any flags about this level, reset them here as well
   }
 
   create() {
-    this.playerName = this.registry.get('playerName') || 'Anonymous';
+    // game state --------------------------------------------------------------------------
+    gameState.score = 0;
+    gameState.lives = 3;
+    gameState.level = 1;
+
+    // this.playerName = this.registry.get('playerName') || 'Anonymous';
+    this.playerName = gameState.playerName;
+
     this.scoreText = this.add.text(20, 20, this.playerName, {
       fontSize: '24px',
       color: '#000',
@@ -90,17 +131,17 @@ export class PlayLevelOne extends Phaser.Scene {
     this.scoreText.setDepth(10);
 
     //------- addeing controll arrows for player movement on small screens-------//
-    const left = this.add
-      .image(30, 448, 'left')
-      .setOrigin(0.5, 0.5)
-      .setScale(0.25)
-      .setInteractive();
+    // const left = this.add
+    //   .image(30, 448, 'left')
+    //   .setOrigin(0.5, 0.5)
+    //   .setScale(0.25)
+    //   .setInteractive();
 
-    const right = this.add
-      .image(420, 448, 'right')
-      .setOrigin(0.5, 0.5)
-      .setScale(0.25)
-      .setInteractive();
+    // const right = this.add
+    //   .image(770, 448, 'right')
+    //   .setOrigin(0.5, 0.5)
+    //   .setScale(0.25)
+    //   .setInteractive();
   }
 
   override update(_: number, delta: number) {
@@ -159,9 +200,10 @@ export class PlayLevelOne extends Phaser.Scene {
   /// ---- detect catches---------------
   private catchBall(bucket: Phaser.Physics.Arcade.Sprite, ball: Phaser.GameObjects.Arc) {
     const points = (ball as any).points || 0;
-    this.score += points;
+    gameState.score += points;
     this.ballsCaught++;
-    this.scoreText.setText('Score: ' + this.score);
+    this.scoreLocal = gameState.score;
+    this.scoreText.setText('Score: ' + this.scoreLocal);
 
     // Get the ball color and apply it as a tint to the bucket
     const ballColor = ball.fillColor;
@@ -177,9 +219,15 @@ export class PlayLevelOne extends Phaser.Scene {
 
     ball.destroy();
 
-    // Check if game is over
+    // Check if level is over
+    // ✅ Level successfully completed
     if (this.ballsCaught >= this.totalBalls) {
-      this.gameOver();
+      // ✅ Level successfully completed
+      this.finishLevel(true);
+    }
+
+    if (gameState.lives <= 0) {
+      this.finishLevel(false);
     }
   }
 
@@ -197,95 +245,9 @@ export class PlayLevelOne extends Phaser.Scene {
 
     // 👉 jump to GameOverScene and pass data
     this.scene.start('GameOverScene', {
-      score: this.score,
-      playerName: this.playerName,
+      score: gameState.score,
+      playerName: gameState.playerName,
+      level: gameState.level,
     });
   }
-
-  // private gameOver() {
-  //   // Stop spawning new balls
-  //   this.time.removeAllEvents();
-
-  //   // Destroy all remaining balls
-  //   this.balls.children.each((ball) => {
-  //     (ball as Phaser.Physics.Arcade.Image).destroy();
-  //     return true;
-  //   });
-  //   this.bucket.clearTint();
-  //   // Show game over text
-  //   this.gameOverText = this.add.text(400, 300, 'GAME OVER!\nFinal Score: ' + this.score, {
-  //     fontSize: '32px',
-  //     color: ' #003598',
-  //     fontFamily: 'Arial',
-  //     align: 'center',
-  //   });
-  //   this.gameOverText.setOrigin(0.5, 0.5);
-  //   this.gameOverText.setDepth(20);
-
-  //   // Add restart instruction
-  //   const restartText = this.add.text(400, 400, `Press R to restart`, {
-  //     fontSize: '20px',
-  //     color: '#000',
-  //     fontFamily: 'Arial',
-  //     align: 'center',
-  //   });
-  //   restartText.setOrigin(0.5, 0.5);
-  //   restartText.setDepth(20);
-
-  //   // Add back to main menu instruction
-  //   const menuText = this.add.text(400, 430, `Press M to return to main menu`, {
-  //     fontSize: '20px',
-  //     color: '#000',
-  //     fontFamily: 'Arial',
-  //     align: 'center',
-  //   });
-  //   menuText.setOrigin(0.5, 0.5);
-  //   menuText.setDepth(20);
-
-  //   // Make just the R and M letters bold using rich text
-  //   restartText.setText('Press R to restart');
-  //   menuText.setText('Press M to return to main menu');
-
-  //   // Listen for restart key
-  //   this.input.keyboard?.on('keydown-R', () => {
-  //     this.scene.restart();
-  //   });
-
-  //   this.input.keyboard?.on('keydown-M', () => {
-  //     this.scene.start('PreloadScene');
-  //   });
-
-  //   (window as any).scoreService
-  //     .addScore(this.playerName, this.score) // optionally pass 'gameId'
-  //     .then(() => {
-  //       this.add
-  //         .text(400, 200, 'Score saved!', {
-  //           fontSize: '20px',
-  //           color: '#270c3fff',
-  //           fontFamily: 'Arial',
-  //           align: 'center',
-  //         })
-  //         .setOrigin(0.5);
-  //     })
-  //     .catch((err: any) => {
-  //       console.error('Error saving score:', err);
-  //       this.add
-  //         .text(400, 500, 'Could not save score 😢', {
-  //           fontSize: '20px',
-  //           color: '#AA0000',
-  //           fontFamily: 'Arial',
-  //           align: 'center',
-  //         })
-  //         .setOrigin(0.5);
-  //     });
-  //   // fetch('http://localhost:3000/scores', {
-  //   //   method: 'POST',
-  //   //   headers: { 'Content-Type': 'application/json' },
-  //   //   body: JSON.stringify({
-  //   //     user: this.playerName,
-  //   //     score: this.score,
-  //   //     timestamp: new Date().toISOString(),
-  //   //   }),
-  //   // });
-  // }
 }

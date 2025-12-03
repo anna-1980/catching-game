@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { gameState } from '../game-state';
 
 export class PreloadScene extends Phaser.Scene {
   private turboText!: Phaser.GameObjects.Text;
@@ -44,9 +45,10 @@ export class PreloadScene extends Phaser.Scene {
 
       if (playerName.length > 0) {
         this.registry.set('playerName', playerName);
+        gameState.playerName = playerName;
         nameForm.removeListener('submit');
         nameForm.setVisible(false);
-        this.scene.start('PlayScene');
+        this.scene.start('PlayLevelOne');
       } else {
         inputElement.placeholder = 'Please enter your name!';
         inputElement.style.borderColor = '#ff0000';
