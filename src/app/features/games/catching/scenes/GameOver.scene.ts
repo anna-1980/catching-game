@@ -68,22 +68,22 @@ export class GameOverScene extends Phaser.Scene {
     //   })
     //   .setOrigin(0.5);
 
-    if (canGoNextLevel) {
-      // Option A: show a "Press N" prompt
-      this.add
-        .text(centerX, centerY + 70, 'Press N for next level', {
-          fontSize: '20px',
-          color: '#000',
-          fontFamily: 'Arial',
-          align: 'center',
-        })
-        .setOrigin(0.5);
+    // if (canGoNextLevel) {
+    //   // Option A: show a "Press N" prompt
+    //   this.add
+    //     .text(centerX, centerY + 70, 'Press N for next level', {
+    //       fontSize: '20px',
+    //       color: '#000',
+    //       fontFamily: 'Arial',
+    //       align: 'center',
+    //     })
+    //     .setOrigin(0.5);
 
-      this.input.keyboard?.on('keydown-N', () => {
-        gameState.level += 1;
-        this.scene.start('Level2Scene'); // or 'PlayLevelTwo'
-      });
-    }
+    //   this.input.keyboard?.on('keydown-N', () => {
+    //     gameState.level += 1;
+    //     this.scene.start('Level2Scene'); // or 'PlayLevelTwo'
+    //   });
+    // }
 
     const menuText = this.add
       .text(centerX, centerY + 100, 'Press M for main menu', {
